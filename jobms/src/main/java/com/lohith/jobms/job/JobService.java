@@ -1,15 +1,17 @@
 package com.lohith.jobms.job;
+
 import java.util.List;
 
+import com.lohith.jobms.job.dto.JobWithCompanyDTO;
+
 public interface JobService {
-	List<Job> findAll();
+	List<JobWithCompanyDTO> findAll();
 
 	void createJob(Job job);
 
-	Job getJobById(Long id);
+	JobWithCompanyDTO getJobById(Long id);
 
 	Boolean deleteJobByID(Long id);
 
 	Boolean updateJob(Long id, Job job);
 }
-

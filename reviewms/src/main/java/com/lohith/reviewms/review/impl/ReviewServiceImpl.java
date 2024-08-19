@@ -1,13 +1,16 @@
 package com.lohith.reviewms.review.impl;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import com.lohith.reviewms.review.Review;
 import com.lohith.reviewms.review.ReviewRepository;
 import com.lohith.reviewms.review.ReviewService;
+import com.lohith.reviewms.review.dto.ReviewWithCompanyDto;
+import com.lohith.reviewms.review.external.Company;
 
 @Service
 public class ReviewServiceImpl implements ReviewService {
@@ -20,12 +23,6 @@ public class ReviewServiceImpl implements ReviewService {
 
 	@Override
 	public void addReview(Long companyId, Review review) {
-
-		// Company company = new Company();
-		// company.setID(companyId);
-		// review.setCompany(company);
-		// reviewRepository.save(review);
-
 		if (companyId != null && review != null) {
 			review.setCompanyID(companyId);
 			reviewRepository.save(review);
@@ -33,23 +30,31 @@ public class ReviewServiceImpl implements ReviewService {
 	}
 
 	@Override
-	public List<Review> getAllReviews(Long companyId) {
-		// List<Review> reviewsLoop = reviewRepository.findAll();
-		// List<Review> resultReview = new ArrayList<>();
+	public List<ReviewWithCompanyDto> getAllReviews(Long companyId) {
+		List<Review> reviewList = reviewRepository.findByCompanyID(companyId);
+		return reviewList.stream()
+				.map(review -> converttoDto(review, companyId))
+				.collect(Collectors.toList());
+	}
 
-		// reviewsLoop.forEach(r -> {
-		// if (r.getCompany().getID().equals(companyId)) {
-		// resultReview.add(r);
-		// }
-		// });
-		// return resultReview;
-
-		return reviewRepository.findByCompanyID(companyId);
+	private ReviewWithCompanyDto converttoDto(Review review, Long companyId) {
+		RestTemplate restTemplate = new RestTemplate();
+		Company company = restTemplate.getForObject("http://localhost:8081/companies/" + companyId,
+				Company.class);
+		ReviewWithCompanyDto reviewWithCompanyDto = new ReviewWithCompanyDto();
+		reviewWithCompanyDto.setReview(review);
+		reviewWithCompanyDto.setCompany(company);
+		return reviewWithCompanyDto;
 	}
 
 	@Override
-	public Review getOneReview(Long reviewId) {
-		return reviewRepository.findById(reviewId).orElse(null);
+	public ReviewWithCompanyDto getOneReview(Long reviewId) {
+		Review review = reviewRepository.findById(reviewId).orElse(null);
+		if (review != null) {
+			long companyId = review.getCompanyID();
+			return converttoDto(review, companyId);
+		}
+		return null;
 	}
 
 	@Override

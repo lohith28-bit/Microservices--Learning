@@ -1,6 +1,5 @@
 package com.lohith.jobms.job;
 
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,7 +23,8 @@ public class Job {
 
 	}
 
-	public Job(Long id, String title, String description, String minSalary, String maxSalary, String location,Long companyID) {
+	public Job(Long id, String title, String description, String minSalary, String maxSalary, String location,
+			Long companyID) {
 		this.id = id;
 		this.title = title;
 		this.description = description;

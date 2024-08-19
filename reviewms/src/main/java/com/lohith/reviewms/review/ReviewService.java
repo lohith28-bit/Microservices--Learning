@@ -2,13 +2,15 @@ package com.lohith.reviewms.review;
 
 import java.util.List;
 
+import com.lohith.reviewms.review.dto.ReviewWithCompanyDto;
+
 public interface ReviewService {
 
-	List<Review> getAllReviews(Long companyId);
+	List<ReviewWithCompanyDto> getAllReviews(Long companyId);
 
 	void addReview(Long companyId, Review review);
 
-	Review getOneReview(Long reviewId);
+	ReviewWithCompanyDto getOneReview(Long reviewId);
 
 	Boolean updateReviewById(Long reviewId, Review review);
 

@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lohith.reviewms.review.dto.ReviewWithCompanyDto;
+
 @RestController
 @RequestMapping("/reviews")
 public class ReviewController {
@@ -25,8 +27,8 @@ public class ReviewController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<Review>> getAllReviews(@RequestParam long companyId) {
-		List<Review> reviews = reviewService.getAllReviews(companyId);
+	public ResponseEntity<List<ReviewWithCompanyDto>> getAllReviews(@RequestParam long companyId) {
+		List<ReviewWithCompanyDto> reviews = reviewService.getAllReviews(companyId);
 		if (!reviews.isEmpty()) {
 			return new ResponseEntity<>(reviewService.getAllReviews(companyId), HttpStatus.ACCEPTED);
 		}
@@ -42,10 +44,10 @@ public class ReviewController {
 
 	@GetMapping("/{reviewId}")
 	public ResponseEntity<?> getOneReview(@PathVariable long reviewId) {
-		Review review = reviewService.getOneReview(reviewId);
+		ReviewWithCompanyDto reviewWithCompanyDto = reviewService.getOneReview(reviewId);
 
-		if (review != null) {
-			return new ResponseEntity<>(review, HttpStatus.OK);
+		if (reviewWithCompanyDto != null) {
+			return new ResponseEntity<>(reviewWithCompanyDto, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>("Review Not Found", HttpStatus.NOT_FOUND);
 		}

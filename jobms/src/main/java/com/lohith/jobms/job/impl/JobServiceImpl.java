@@ -1,19 +1,19 @@
 package com.lohith.jobms.job.impl;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
-import java.util.Optional;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import com.lohith.jobms.job.Job;
 import com.lohith.jobms.job.JobRepository;
 import com.lohith.jobms.job.JobService;
+import com.lohith.jobms.job.dto.JobWithCompanyDTO;
+import com.lohith.jobms.job.external.Company;
 
 @Service
 public class JobServiceImpl implements JobService {
-	// private List<Job> jobs = new ArrayList<>();
-	// private Long nextId = 1L;
-
 	JobRepository jobRepository;
 
 	public JobServiceImpl(JobRepository jobRepository) {
@@ -21,41 +21,42 @@ public class JobServiceImpl implements JobService {
 	}
 
 	@Override
-	public List<Job> findAll() {
-		// return jobs;
+	public List<JobWithCompanyDTO> findAll() {
+		List<Job> jobs = jobRepository.findAll();
 
-		return jobRepository.findAll();
+		return jobs.stream()
+				.map(this::converttoDto)
+				.collect(Collectors.toList());
+	}
+
+	private JobWithCompanyDTO converttoDto(Job job) {
+		long companyId = job.getCompanyID();
+		RestTemplate restTemplate = new RestTemplate();
+		Company company = restTemplate.getForObject("http://localhost:8081/companies/" + companyId, Company.class);
+		JobWithCompanyDTO jobWithCompanyDTO = new JobWithCompanyDTO();
+		jobWithCompanyDTO.setJob(job);
+		jobWithCompanyDTO.setCompany(company);
+		return jobWithCompanyDTO;
+
 	}
 
 	@Override
 	public void createJob(Job job) {
-		// job.setID(nextId++);
-		// jobs.add(job);
-
 		jobRepository.save(job);
 	}
 
 	@Override
-	public Job getJobById(Long id) {
-		// for(Job job : jobs){
-		// if(job.getID().equals(id)) return job;
-		// }
-		// return null;
+	public JobWithCompanyDTO getJobById(Long id) {
+		Job job = jobRepository.findById(id).orElse(null);
+		if (job != null) {
+			return converttoDto(job);
+		}
+		return null;
 
-		return jobRepository.findById(id).orElse(null);
 	}
 
 	@Override
 	public Boolean deleteJobByID(Long id) {
-		// Iterator<Job> iterator = jobs.iterator();
-		// while(iterator.hasNext()){
-		// Job job = iterator.next();
-		// if(job.getID().equals(id)) {
-		// iterator.remove();
-		// return true;
-		// }
-		// }
-		// return false;
 
 		if (jobRepository.existsById(id)) {
 			jobRepository.deleteById(id);
@@ -66,18 +67,6 @@ public class JobServiceImpl implements JobService {
 
 	@Override
 	public Boolean updateJob(Long id, Job updatedJob) {
-		// for(Job job : jobs){
-		// if(job.getID().equals(id)){
-		// job.setTitle(updatedJob.getTitle());
-		// job.setDescripion(updatedJob.getDescripion());
-		// job.setMaxSalary(updatedJob.getMaxSalary());
-		// job.setMinSalary(updatedJob.getMinSalary());
-		// job.setLocation(updatedJob.getLocation());
-		// return true;
-		// }
-		// }
-		// return false;
-
 		Optional<Job> jobOptional = jobRepository.findById(id);
 		if (jobOptional.isPresent()) {
 			Job job = jobOptional.get();

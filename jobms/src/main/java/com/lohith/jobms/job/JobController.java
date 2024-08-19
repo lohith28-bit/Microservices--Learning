@@ -5,22 +5,21 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PathVariable;
+
+import com.lohith.jobms.job.dto.JobWithCompanyDTO;
 
 @RestController
 @RequestMapping("/jobs")
 public class JobController {
 
 	private JobService jobService;
-	
+
 	public JobController(JobService jobService) {
 		this.jobService = jobService;
 	}
 
 	@GetMapping
-	public ResponseEntity<List<Job>> findAll() {
+	public ResponseEntity<List<JobWithCompanyDTO>> findAll() {
 		return ResponseEntity.ok(jobService.findAll());
 	}
 
@@ -32,11 +31,11 @@ public class JobController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getJobById(@PathVariable("id") Long id) {
-		Job job = jobService.getJobById(id);
-		if (job != null) {
-			return new ResponseEntity<>(job, HttpStatus.OK);
+		JobWithCompanyDTO jobWithCompanyDTO = jobService.getJobById(id);
+		if (jobWithCompanyDTO != null) {
+			return new ResponseEntity<>(jobWithCompanyDTO, HttpStatus.OK);
 		}
-		return new ResponseEntity<>("Job not found",HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>("Job not found", HttpStatus.NOT_FOUND);
 	}
 
 	@DeleteMapping("/{id}")
