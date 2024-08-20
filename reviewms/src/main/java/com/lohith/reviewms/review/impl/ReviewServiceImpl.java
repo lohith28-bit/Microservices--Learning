@@ -3,6 +3,7 @@ package com.lohith.reviewms.review.impl;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -16,6 +17,9 @@ import com.lohith.reviewms.review.external.Company;
 public class ReviewServiceImpl implements ReviewService {
 
 	private ReviewRepository reviewRepository;
+
+	@Autowired
+	private RestTemplate restTemplate;
 
 	public ReviewServiceImpl(ReviewRepository reviewRepository) {
 		this.reviewRepository = reviewRepository;
@@ -38,8 +42,7 @@ public class ReviewServiceImpl implements ReviewService {
 	}
 
 	private ReviewWithCompanyDto converttoDto(Review review, Long companyId) {
-		RestTemplate restTemplate = new RestTemplate();
-		Company company = restTemplate.getForObject("http://localhost:8081/companies/" + companyId,
+		Company company = restTemplate.getForObject("http://COMPANY-SERVICE/companies/" + companyId,
 				Company.class);
 		ReviewWithCompanyDto reviewWithCompanyDto = new ReviewWithCompanyDto();
 		reviewWithCompanyDto.setReview(review);
