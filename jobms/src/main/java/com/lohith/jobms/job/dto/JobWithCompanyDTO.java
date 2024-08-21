@@ -1,26 +1,71 @@
 package com.lohith.jobms.job.dto;
 
-import com.lohith.jobms.job.Job;
 import com.lohith.jobms.job.external.Company;
 
 public class JobWithCompanyDTO {
 
-	private Job job;
-	private Company company;
+  private Long id;
+  private String title;
+  private String description;
+  private String minSalary;
+  private String maxSalary;
+  private String location;
 
-	public Job getJob() {
-		return this.job;
-	}
+  private Company company;
 
-	public void setJob(Job value) {
-		this.job = value;
-	}
+  public Company getCompany() {
+    return this.company;
+  }
 
-	public Company getCompany() {
-		return this.company;
-	}
+  public void setCompany(Company value) {
+    this.company = value;
+  }
 
-	public void setCompany(Company value) {
-		this.company = value;
-	}
+  public Long getId() {
+    return this.id;
+  }
+
+  public void setId(Long value) {
+    this.id = value;
+  }
+
+  public String getTitle() {
+    return this.title;
+  }
+
+  public void setTitle(String value) {
+    this.title = value;
+  }
+
+  public String getDescription() {
+    return this.description;
+  }
+
+  public void setDescription(String value) {
+    this.description = value;
+  }
+
+  public String getMinSalary() {
+    return this.minSalary;
+  }
+
+  public void setMinSalary(String value) {
+    this.minSalary = value;
+  }
+
+  public String getMaxSalary() {
+    return this.maxSalary;
+  }
+
+  public void setMaxSalary(String value) {
+    this.maxSalary = value;
+  }
+
+  public String getLocation() {
+    return this.location;
+  }
+
+  public void setLocation(String value) {
+    this.location = value;
+  }
 }

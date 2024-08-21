@@ -12,6 +12,7 @@ import com.lohith.jobms.job.JobRepository;
 import com.lohith.jobms.job.JobService;
 import com.lohith.jobms.job.dto.JobWithCompanyDTO;
 import com.lohith.jobms.job.external.Company;
+import com.lohith.jobms.job.mapper.JobMapper;
 
 @Service
 public class JobServiceImpl implements JobService {
@@ -35,11 +36,7 @@ public class JobServiceImpl implements JobService {
 	private JobWithCompanyDTO converttoDto(Job job) {
 		long companyId = job.getCompanyID();
 		Company company = restTemplate.getForObject("http://COMPANY-SERVICE/companies/" + companyId, Company.class);
-		JobWithCompanyDTO jobWithCompanyDTO = new JobWithCompanyDTO();
-		jobWithCompanyDTO.setJob(job);
-		jobWithCompanyDTO.setCompany(company);
-		return jobWithCompanyDTO;
-
+		return new JobMapper().mapToJobWithCompanyDTO(job, company);
 	}
 
 	@Override
