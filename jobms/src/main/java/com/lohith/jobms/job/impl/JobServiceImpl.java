@@ -7,11 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lohith.jobms.job.Job;
 import com.lohith.jobms.job.JobRepository;
 import com.lohith.jobms.job.JobService;
 import com.lohith.jobms.job.dto.JobWithCompanyDTO;
 import com.lohith.jobms.job.external.Company;
+import com.lohith.jobms.job.external.Review;
 import com.lohith.jobms.job.mapper.JobMapper;
 
 @Service
@@ -33,10 +36,20 @@ public class JobServiceImpl implements JobService {
 				.collect(Collectors.toList());
 	}
 
+	@SuppressWarnings("null")
 	private JobWithCompanyDTO converttoDto(Job job) {
 		long companyId = job.getCompanyID();
 		Company company = restTemplate.getForObject("http://COMPANY-SERVICE/companies/" + companyId, Company.class);
-		return new JobMapper().mapToJobWithCompanyDTO(job, company);
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode root = restTemplate.getForObject("http://REVIEW-SERVICE/reviews?companyId=" + companyId,
+				JsonNode.class);
+		List<Review> reviewList = new ArrayList<>();
+		for (JsonNode node : root) {
+			JsonNode reviewNode = node.get("review");
+			Review review = mapper.convertValue(reviewNode, Review.class);
+			reviewList.add(review);
+		}
+		return new JobMapper().mapToJobWithCompanyDTO(job, company, reviewList);
 	}
 
 	@Override

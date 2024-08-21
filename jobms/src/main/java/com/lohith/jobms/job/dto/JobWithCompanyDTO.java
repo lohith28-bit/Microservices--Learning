@@ -1,6 +1,9 @@
 package com.lohith.jobms.job.dto;
 
+import java.util.List;
+
 import com.lohith.jobms.job.external.Company;
+import com.lohith.jobms.job.external.Review;
 
 public class JobWithCompanyDTO {
 
@@ -12,6 +15,8 @@ public class JobWithCompanyDTO {
   private String location;
 
   private Company company;
+
+  private List<Review> reviews;
 
   public Company getCompany() {
     return this.company;
@@ -67,5 +72,13 @@ public class JobWithCompanyDTO {
 
   public void setLocation(String value) {
     this.location = value;
+  }
+
+  public List<Review> getReviews() {
+    return this.reviews;
+  }
+
+  public void setReviews(List<Review> value) {
+    this.reviews = value;
   }
 }
