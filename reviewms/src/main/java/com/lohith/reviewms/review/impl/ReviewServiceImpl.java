@@ -5,24 +5,31 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import com.lohith.reviewms.review.Review;
 import com.lohith.reviewms.review.ReviewRepository;
 import com.lohith.reviewms.review.ReviewService;
+import com.lohith.reviewms.review.clients.CompanyClient;
 import com.lohith.reviewms.review.dto.ReviewWithCompanyDto;
 import com.lohith.reviewms.review.external.Company;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class ReviewServiceImpl implements ReviewService {
 
+	private static final Logger logger = LoggerFactory.getLogger(ReviewServiceImpl.class);
+
 	private ReviewRepository reviewRepository;
 
-	@Autowired
-	private RestTemplate restTemplate;
+	// private RestTemplate restTemplate;
 
-	public ReviewServiceImpl(ReviewRepository reviewRepository) {
+	private CompanyClient companyClient;
+
+	public ReviewServiceImpl(ReviewRepository reviewRepository, CompanyClient companyClient) {
 		this.reviewRepository = reviewRepository;
+		this.companyClient = companyClient;
 	}
 
 	@Override
@@ -42,11 +49,18 @@ public class ReviewServiceImpl implements ReviewService {
 	}
 
 	private ReviewWithCompanyDto converttoDto(Review review, Long companyId) {
-		Company company = restTemplate.getForObject("http://COMPANY-SERVICE/companies/" + companyId,
-				Company.class);
+		// Company company =
+		// restTemplate.getForObject("http://COMPANY-SERVICE/companies/" + companyId,
+		// Company.class);
+
+		Company company = companyClient.getCompany(companyId);
+		if (company == null) {
+			logger.error("Failed to fetch company details for companyId: {}", companyId);
+		}
 		ReviewWithCompanyDto reviewWithCompanyDto = new ReviewWithCompanyDto();
 		reviewWithCompanyDto.setReview(review);
 		reviewWithCompanyDto.setCompany(company);
+
 		return reviewWithCompanyDto;
 	}
 
