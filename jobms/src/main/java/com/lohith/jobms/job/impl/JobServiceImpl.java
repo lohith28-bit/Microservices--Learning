@@ -17,6 +17,8 @@ import com.lohith.jobms.job.external.Company;
 import com.lohith.jobms.job.external.Review;
 import com.lohith.jobms.job.mapper.JobMapper;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+
 @Service
 public class JobServiceImpl implements JobService {
 	JobRepository jobRepository;
@@ -28,6 +30,7 @@ public class JobServiceImpl implements JobService {
 	}
 
 	@Override
+	@CircuitBreaker(name= "companyBreaker")
 	public List<JobWithCompanyDTO> findAll() {
 		List<Job> jobs = jobRepository.findAll();
 
