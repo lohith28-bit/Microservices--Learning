@@ -30,13 +30,20 @@ public class JobServiceImpl implements JobService {
 	}
 
 	@Override
-	@CircuitBreaker(name= "companyBreaker")
+	@CircuitBreaker(name = "companyBreaker", fallbackMethod = "companyBreakerFallout")
 	public List<JobWithCompanyDTO> findAll() {
 		List<Job> jobs = jobRepository.findAll();
 
 		return jobs.stream()
 				.map(this::converttoDto)
 				.collect(Collectors.toList());
+	}
+
+	public List<String> companyBreakerFallout(Exception e) {
+		List<String> lst = new ArrayList<>();
+		lst.add("Dummy");
+		lst.add(e.toString());
+		return lst;
 	}
 
 	@SuppressWarnings("null")
