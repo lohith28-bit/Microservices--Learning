@@ -18,6 +18,7 @@ import com.lohith.jobms.job.external.Review;
 import com.lohith.jobms.job.mapper.JobMapper;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.retry.annotation.Retry;
 
 @Service
@@ -31,9 +32,9 @@ public class JobServiceImpl implements JobService {
 	}
 
 	@Override
-	// @CircuitBreaker(name = "companyBreaker", fallbackMethod =
-	// "companyBreakerFallout")
-	@Retry(name = "companyBreaker", fallbackMethod = "companyBreakerFallout")
+	@CircuitBreaker(name = "companyBreaker", fallbackMethod = "companyBreakerFallout")
+	// @Retry(name = "companyBreaker", fallbackMethod = "companyBreakerFallout")
+	@RateLimiter(name = "companyBreaker")
 	public List<JobWithCompanyDTO> findAll() {
 		List<Job> jobs = jobRepository.findAll();
 
