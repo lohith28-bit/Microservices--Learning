@@ -4,6 +4,8 @@ import java.util.*;
 
 import org.springframework.stereotype.Service;
 
+import com.lohith.companyms.company.dto.ReviewMessage;
+
 @Service
 public interface CompanyService {
 
@@ -17,4 +19,5 @@ public interface CompanyService {
 
 	Company getcompanybyId(Long id);
 
+	void updateCompanyRating(ReviewMessage reviewMessage);
 }

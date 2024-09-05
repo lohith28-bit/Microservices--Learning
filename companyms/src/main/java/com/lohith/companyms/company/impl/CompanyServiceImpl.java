@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.lohith.companyms.company.Company;
 import com.lohith.companyms.company.CompanyRepository;
 import com.lohith.companyms.company.CompanyService;
+import com.lohith.companyms.company.dto.ReviewMessage;
 
 @Service
 public class CompanyServiceImpl implements CompanyService {
@@ -52,6 +53,12 @@ public class CompanyServiceImpl implements CompanyService {
 	@Override
 	public Company getcompanybyId(Long id) {
 		return companyRepository.findById(id).orElse(null);
+	}
+
+	@Override
+	public void updateCompanyRating(ReviewMessage reviewMessage){
+		System.out.println("Description "+reviewMessage.getDescription());
+
 	}
 
 }

@@ -78,6 +78,12 @@
       		<groupId>io.github.openfeign</groupId>
       		<artifactId>feign-micrometer</artifactId>
     	</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
+		
 	</dependencies>
 
 	<dependencyManagement>
@@ -100,6 +106,5 @@
 			</plugin>
 		</plugins>
 	</build>
-
 
 </project>

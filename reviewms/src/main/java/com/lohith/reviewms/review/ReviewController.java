@@ -15,15 +15,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lohith.reviewms.review.dto.ReviewWithCompanyDto;
+import com.lohith.reviewms.review.messaging.ReviewMessageProducer;
 
 @RestController
 @RequestMapping("/reviews")
 public class ReviewController {
 
 	private ReviewService reviewService;
+	private ReviewMessageProducer reviewMessageProducer;
 
-	public ReviewController(ReviewService reviewService) {
+	public ReviewController(ReviewService reviewService, ReviewMessageProducer reviewMessageProducer) {
 		this.reviewService = reviewService;
+		this.reviewMessageProducer = reviewMessageProducer;
 	}
 
 	@GetMapping
@@ -39,6 +42,7 @@ public class ReviewController {
 	@PostMapping
 	public ResponseEntity<String> addReview(@RequestParam long companyId, @RequestBody Review review) {
 		reviewService.addReview(companyId, review);
+		reviewMessageProducer.sendMessage(review);
 		return new ResponseEntity<>("Review added successfully", HttpStatus.CREATED);
 	}
 
