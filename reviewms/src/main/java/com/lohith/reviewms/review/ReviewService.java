@@ -16,4 +16,6 @@ public interface ReviewService {
 
 	Boolean deleteReviewById(Long reviewId);
 
+	Double getAverageRating(Long compantId);
+
 }

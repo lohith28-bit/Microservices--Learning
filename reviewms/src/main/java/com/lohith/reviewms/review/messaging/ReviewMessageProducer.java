@@ -19,10 +19,10 @@ public class ReviewMessageProducer {
 		ReviewMessage reviewMessage = new ReviewMessage();
 		reviewMessage.setId(review.getId());
 		reviewMessage.setTitle(review.getTitle());
-		reviewMessage.setCompantId(review.getCompanyID());
+		reviewMessage.setCompanyId(review.getCompanyID());
 		reviewMessage.setDescription(review.getDescription());
 		reviewMessage.setRating(review.getRating());
 
-		rabbitTemplate.convertAndSend("companyRatingQueue",reviewMessage);
+		rabbitTemplate.convertAndSend("companyRatingQueue", reviewMessage);
 	}
 }

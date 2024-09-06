@@ -75,4 +75,8 @@ public class ReviewController {
 
 	}
 
+	@GetMapping("/averageRating")
+	public Double getMethodName(@RequestParam Long companyId) {
+		return reviewService.getAverageRating(companyId);
+	}
 }

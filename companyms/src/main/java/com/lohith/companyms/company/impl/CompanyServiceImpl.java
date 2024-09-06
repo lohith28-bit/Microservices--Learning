@@ -7,15 +7,21 @@ import org.springframework.stereotype.Service;
 import com.lohith.companyms.company.Company;
 import com.lohith.companyms.company.CompanyRepository;
 import com.lohith.companyms.company.CompanyService;
+import com.lohith.companyms.company.client.ReviewClient;
 import com.lohith.companyms.company.dto.ReviewMessage;
+
+import jakarta.ws.rs.NotFoundException;
 
 @Service
 public class CompanyServiceImpl implements CompanyService {
 
 	private CompanyRepository companyRepository;
 
-	public CompanyServiceImpl(CompanyRepository companyRepository) {
+	private ReviewClient reviewClient;
+
+	public CompanyServiceImpl(CompanyRepository companyRepository, ReviewClient reviewClient) {
 		this.companyRepository = companyRepository;
+		this.reviewClient = reviewClient;
 	}
 
 	@Override
@@ -56,9 +62,15 @@ public class CompanyServiceImpl implements CompanyService {
 	}
 
 	@Override
-	public void updateCompanyRating(ReviewMessage reviewMessage){
-		System.out.println("Description "+reviewMessage.getDescription());
+	public void updateCompanyRating(ReviewMessage reviewMessage) {
+		Double avgRating = reviewClient.getAvgForCompany(reviewMessage.getCompanyId());
 
+		Company company = companyRepository.findById(reviewMessage.getCompanyId())
+				.orElseThrow(() -> new NotFoundException("Company not found" + reviewMessage.getDescription()));
+
+		company.setRating(avgRating);
+
+		companyRepository.save(company);
 	}
 
 }
