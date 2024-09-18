@@ -54,15 +54,25 @@ public class JobServiceImpl implements JobService {
 	private JobWithCompanyDTO converttoDto(Job job) {
 		long companyId = job.getCompanyID();
 		Company company = restTemplate.getForObject("http://COMPANY-SERVICE/companies/" + companyId, Company.class);
-		ObjectMapper mapper = new ObjectMapper();
-		JsonNode root = restTemplate.getForObject("http://REVIEW-SERVICE/reviews?companyId=" + companyId,
-				JsonNode.class);
-		List<Review> reviewList = new ArrayList<>();
-		for (JsonNode node : root) {
-			JsonNode reviewNode = node.get("review");
-			Review review = mapper.convertValue(reviewNode, Review.class);
-			reviewList.add(review);
+
+		List<Review> reviewList = null;
+		try {
+			JsonNode root = restTemplate.getForObject("http://REVIEW-SERVICE/reviews?companyId=" + companyId,
+					JsonNode.class);
+
+			if (root != null) {
+				ObjectMapper mapper = new ObjectMapper();
+				for (JsonNode node : root) {
+					JsonNode reviewNode = node.get("review");
+					Review review = mapper.convertValue(reviewNode, Review.class);
+					reviewList.add(review);
+
+				}
+			}
+		} catch (Exception e) {
+
 		}
+
 		return new JobMapper().mapToJobWithCompanyDTO(job, company, reviewList);
 	}
 
