@@ -5,7 +5,7 @@ public class ReviewMessage {
 	private Long id;
 	private String title;
 	private String description;
-	private double rating;
+	private Double rating;
 	private Long companyId;
 
 	public Long getId() {

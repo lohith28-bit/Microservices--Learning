@@ -1,5 +1,7 @@
 package com.lohith.reviewms.review.impl;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -103,6 +105,8 @@ public class ReviewServiceImpl implements ReviewService {
 	public Double getAverageRating(Long companyId) {
 		List<Review> reviewList = reviewRepository.findByCompanyID(companyId);
 
-		return reviewList.stream().mapToDouble(Review::getRating).average().orElse(0.0);
+		Double avgRating = reviewList.stream().mapToDouble(Review::getRating).average().orElse(0.0);
+
+		return Math.round(avgRating * 10) / 10.0;
 	}
 }
