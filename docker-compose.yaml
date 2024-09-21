@@ -24,7 +24,7 @@ services:
       - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL:-user@domain.com}
       - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD:-secretpgadmin}
       - PGADMIN_CONFIG_SERVER_MODE=False
-    
+
   zipkin:
     image: openzipkin/zipkin
     container_name: zipkin
@@ -37,9 +37,77 @@ services:
     ports:
       - 5672:5672
       - 15672:15672
-    
+
+  companyms:
+    image: itslohith/companyms:latest
+    container_name: companyms
+    ports:
+      - 8081:8081
+    depends_on:
+      - service-reg
+      - config-server
+      - rabbitmq
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  jobms:
+    image: itslohith/jobms:latest
+    container_name: jobms
+    ports:
+      - 8082:8082
+    depends_on:
+      - service-reg
+      - companyms
+      - gateway-ms
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  reviewms:
+    image: itslohith/reviewms:latest
+    container_name: reviewms
+    ports:
+      - 8083:8083
+    depends_on:
+      - service-reg
+      - companyms
+      - gateway-ms
+      - rabbitmq
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  config-server:
+    image: itslohith/config-server:latest
+    container_name: config-server
+    ports:
+      - 8080:8080
+    depends_on:
+      - service-reg
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  gateway-ms:
+    image: itslohith/gateway-ms:latest
+    container_name: gateway-ms
+    ports:
+      - 8084:8084
+    depends_on:
+      - service-reg
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  service-reg:
+    image: itslohith/service-reg:latest
+    container_name: service-reg
+    ports:
+      - 8761:8761
+    depends_on:
+      - rabbitmq
+      - zipkin
+      - PostgresSQL
+      - PGAdmin
+
 volumes:
   postgres:
   pgadmin:
 
-    
+

@@ -55,7 +55,7 @@ public class JobServiceImpl implements JobService {
 		long companyId = job.getCompanyID();
 		Company company = restTemplate.getForObject("http://COMPANY-SERVICE/companies/" + companyId, Company.class);
 
-		List<Review> reviewList = null;
+		List<Review> reviewList = new ArrayList<>();;
 		try {
 			JsonNode root = restTemplate.getForObject("http://REVIEW-SERVICE/reviews?companyId=" + companyId,
 					JsonNode.class);
